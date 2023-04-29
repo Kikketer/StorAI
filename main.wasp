@@ -1,0 +1,11 @@
+app StorAI {
+  wasp: {
+    version: "^0.10.3"
+  },
+  title: "StorAI"
+}
+
+route RootRoute { path: "/", to: MainPage }
+page MainPage {
+  component: import Main from "@client/MainPage.jsx"
+}
