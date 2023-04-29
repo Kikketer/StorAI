@@ -1,0 +1,9 @@
+.output {
+  overflow: scroll;
+  max-height: 15rem;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 1rem;
+  margin: 0;
+  grid-area: health;
+}

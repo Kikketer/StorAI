@@ -1,0 +1,13 @@
+.main-container {
+  display: grid;
+  gap: 1rem;
+  max-width: 900px;
+  margin: auto;
+  grid-template-rows: 1fr 5rem auto 5rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'image image'
+    'health inventory'
+    'output output'
+    'input input';
+}
