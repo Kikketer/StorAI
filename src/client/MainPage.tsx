@@ -11,10 +11,10 @@ const MainPage = () => {
   return (
     <CharacterWrap>
       {({ character, damageBody }) => (
-        <ChatWrap>
+        <ChatWrap character={character}>
           {({ sendCommand, image }) => (
             <div className={styles['main-container']}>
-              <RoomImage image64={image} />
+              <RoomImage image64={character?.room_image ?? image} />
               <Health damageBody={damageBody} character={character} />
               <Inventory />
               <Output />
