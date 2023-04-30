@@ -43,8 +43,20 @@ export const sendCommand = async (
   context: any
 ): Promise<{ image: string } | void> => {
   if (context.user) {
-    console.log('Sending a command ', command)
-    return { image: await generateImage({ description: command }) }
+    // Get the current character
+    const character = await context.entities.Character.findFirst({
+      where: { user: { id: context.user.id } },
+    })
+    const image = await generateImage({ description: command })
+    // Save the resulting image to the database
+    await context.entities.Character.updateMany({
+      where: { id: character.id, user: { id: context.user.id } },
+      data: {
+        room_image: image,
+      },
+    })
+
+    return { image }
   }
 }
 

@@ -1,5 +1,6 @@
 .room-image {
   min-height: 33%;
-  border: 1px solid lightblue;
   grid-area: image;
+  display: flex;
+  justify-content: center;
 }

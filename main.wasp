@@ -69,14 +69,16 @@ entity User {=psl
 psl=}
 
 entity Character {=psl
-  id              Int     @id @default(autoincrement())
-  user            User    @relation(fields: [userId], references: [id])
-  userId          Int     @unique
-  name            String
-  health_head     Int
-  health_body     Int
-  health_leftArm  Int
-  health_rightArm Int
-  health_leftLeg  Int
-  health_rightLeg Int
+  id               Int     @id @default(autoincrement())
+  user             User    @relation(fields: [userId], references: [id])
+  userId           Int     @unique
+  name             String
+  health_head      Int
+  health_body      Int
+  health_leftArm   Int
+  health_rightArm  Int
+  health_leftLeg   Int
+  health_rightLeg  Int
+  room_image       String?
+  room_description String?
 psl=}
