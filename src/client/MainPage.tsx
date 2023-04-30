@@ -4,14 +4,14 @@ import styles from './mainPage.module.css'
 import { Inventory } from './components/Inventory'
 import { Output } from './components/Output'
 import { Input } from './components/Input'
-import { ChatProvider } from './providers/Chat.context'
 import { CharacterWrap } from './components/CharacterWrap'
+import { ChatWrap } from './components/ChatWrap'
 
 const MainPage = () => {
   return (
     <CharacterWrap>
       {({ character, damageBody }) => (
-        <ChatProvider>
+        <ChatWrap>
           {({ sendCommand }) => (
             <div className={styles['main-container']}>
               <RoomImage />
@@ -21,7 +21,7 @@ const MainPage = () => {
               <Input sendCommand={sendCommand} />
             </div>
           )}
-        </ChatProvider>
+        </ChatWrap>
       )}
     </CharacterWrap>
   )
