@@ -18,7 +18,7 @@ export const damage = (
 ) => {
   if (context.user) {
     return context.entities.Character.updateMany({
-      where: { id, user: { connect: { id: context.user.id } } },
+      where: { id, user: { id: context.user.id } },
       data: {
         [`health_${component}`]: 0,
       },
