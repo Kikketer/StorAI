@@ -12,9 +12,9 @@ const MainPage = () => {
     <CharacterWrap>
       {({ character, damageBody }) => (
         <ChatWrap>
-          {({ sendCommand }) => (
+          {({ sendCommand, image }) => (
             <div className={styles['main-container']}>
-              <RoomImage />
+              <RoomImage image64={image} />
               <Health damageBody={damageBody} character={character} />
               <Inventory />
               <Output />

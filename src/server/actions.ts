@@ -1,6 +1,5 @@
 import * as env from 'dotenv'
-import { doSomething } from './serverUtils'
-import { generateImage } from '../shared/chatActions'
+import fetch from 'node-fetch'
 
 env.config()
 
@@ -42,10 +41,40 @@ export const createCharacter = ({ name }: { name: string }, context: any) => {
 export const sendCommand = async (
   { command }: { command: string },
   context: any
-) => {
+): Promise<{ image: string } | void> => {
   if (context.user) {
     console.log('Sending a command ', command)
-    await doSomething()
-    await generateImage({ description: command })
+    return { image: await generateImage({ description: command }) }
   }
+}
+
+const generateImage = async ({
+  description: _description,
+}): Promise<string> => {
+  const resp = await fetch(
+    'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Stability-Client-ID': 'StorAI',
+        Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
+      },
+      body: JSON.stringify({
+        text_prompts: [
+          {
+            text: 'dungeons and dragons, battlemap, overhead view, combat grid, square grid, single room, a table in the center of the room, statues around the edges of the room, 8k, high resolution',
+            weight: 1,
+          },
+        ],
+      }),
+    }
+  )
+
+  if (!resp.ok) {
+    throw new Error('Failed to generate image')
+  }
+
+  const json = (await resp.json()) as { artifacts: { base64: string }[] }
+  return json?.artifacts[0]?.base64
 }

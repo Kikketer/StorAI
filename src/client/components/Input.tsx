@@ -1,8 +1,10 @@
 import { ReactElement, useState, FC } from 'react'
 import styles from './input.module.css'
-import { ChatProps } from '../providers/Chat.context'
+import { ChatProps } from './ChatWrap'
 
-export const Input: FC<ChatProps> = ({ sendCommand }): ReactElement => {
+export const Input: FC<Pick<ChatProps, 'sendCommand'>> = ({
+  sendCommand,
+}): ReactElement => {
   const [loading, setLoading] = useState(false)
 
   // TS-BS... basic stuff like "submit a form" is very hard to find the proper event type

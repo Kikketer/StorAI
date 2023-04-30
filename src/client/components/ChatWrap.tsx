@@ -1,8 +1,9 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import sendCommandToServer from '@wasp/actions/sendCommand'
 
-type ChatProps = {
+export type ChatProps = {
   sendCommand: (T: { command: string }) => Promise<void>
+  image: string
 }
 
 type ChatWrap = {
@@ -10,13 +11,15 @@ type ChatWrap = {
 }
 
 export const ChatWrap: FC<ChatWrap> = ({ children }) => {
+  const [image, setImage] = useState('')
   const sendCommand = async ({ command }: { command: string }) => {
     try {
-      await sendCommandToServer({ command })
+      const results = await sendCommandToServer({ command })
+      setImage(results?.image ?? '')
     } catch (err) {
       console.error(err)
     }
   }
 
-  return <div>{children({ sendCommand })}</div>
+  return <div>{children({ sendCommand, image })}</div>
 }
