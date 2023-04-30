@@ -58,6 +58,7 @@ action damage {
 
 action sendCommand {
   fn: import { sendCommand } from "@server/actions.js",
+  entities: [Character]
 }
 
 entity User {=psl
