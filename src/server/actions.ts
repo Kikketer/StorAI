@@ -60,6 +60,36 @@ export const sendCommand = async (
   }
 }
 
+const generateRoom = async ({ description }: { description: string }) => {
+  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'system',
+          text: '',
+        },
+        {
+          role: 'user',
+          text: description,
+        },
+      ],
+    }),
+  })
+
+  if (!resp.ok) {
+    throw new Error('Failed to get a room description')
+  }
+
+  const json = (await resp.json()) as { artifacts: { base64: string }[] }
+  return json?.artifacts[0]?.base64
+}
+
 const generateImage = async ({
   description: _description,
 }): Promise<string> => {
