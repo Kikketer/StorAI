@@ -13,8 +13,29 @@ page MainPage {
   component: import Main from "@client/MainPage.tsx"
 }
 
+query getCharacter {
+    fn: import { getCharacter } from "@server/queries.js",
+    entities: [Character]
+}
+
+action damage {
+    fn: import { damage } from "@server/actions.js",
+    entities: [Character]
+}
+
 entity Task {=psl
     id          Int     @id @default(autoincrement())
     description String
     isDone      Boolean @default(false)
+psl=}
+
+entity Character {=psl
+    id              Int     @id @default(autoincrement())
+    name            String
+    health_head     Int
+    health_body     Int
+    health_leftArm  Int
+    health_rightArm Int
+    health_leftLeg  Int
+    health_rightLeg Int
 psl=}

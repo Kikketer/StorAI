@@ -3,7 +3,7 @@
   gap: 1rem;
   max-width: 900px;
   margin: auto;
-  grid-template-rows: 1fr 5rem auto 5rem;
+  grid-template-rows: 1fr auto auto 5rem;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     'image image'

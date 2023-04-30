@@ -4,23 +4,14 @@ type ChatBase = {
   children: ReactNode
 }
 
-type ChatContextProps = {
-  chat: (input: string) => Promise<string>
-}
+type ChatContextProps = {}
 
 const ChatContext = createContext<ChatContextProps | null>(null)
 
-const chat = async (_input: string): Promise<string> => {
-  await new Promise((resolve) => setTimeout(resolve, 600))
-  return 'Yep you asked me something...'
-}
-
 const ChatProvider = ({ children }: ChatBase): JSX.Element => {
   const availableAttributes = useMemo(() => {
-    return {
-      chat,
-    }
-  }, [chat])
+    return {}
+  }, [])
 
   return (
     <ChatContext.Provider value={availableAttributes}>
