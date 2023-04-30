@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useEffect, FC } from 'react'
+import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Character } from '@wasp/entities'
 import { useCharacter } from '../hooks/useCharacter'

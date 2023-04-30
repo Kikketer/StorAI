@@ -49,7 +49,7 @@ export const useCharacter = (): UseCharacter => {
     }
   }
 
-  const healBody = () => {}
+  // const healBody = () => {}
 
   return {
     character,
