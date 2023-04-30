@@ -5,17 +5,17 @@ import { Inventory } from './components/Inventory'
 import { Output } from './components/Output'
 import { Input } from './components/Input'
 import { ChatProvider } from './providers/Chat.context'
-import { CharacterProvider } from './providers/Character.context'
+import { CharacterWrap } from './components/CharacterWrap'
 
 const MainPage = () => {
   return (
-    <CharacterProvider>
-      {({ character, getHit }) => (
+    <CharacterWrap>
+      {({ character, damageBody }) => (
         <ChatProvider>
           {({ sendCommand }) => (
             <div className={styles['main-container']}>
               <RoomImage />
-              <Health getHit={getHit} character={character} />
+              <Health damageBody={damageBody} character={character} />
               <Inventory />
               <Output />
               <Input sendCommand={sendCommand} />
@@ -23,7 +23,7 @@ const MainPage = () => {
           )}
         </ChatProvider>
       )}
-    </CharacterProvider>
+    </CharacterWrap>
   )
 }
 export default MainPage

@@ -1,26 +1,15 @@
-import createCharacter from '@wasp/actions/createCharacter'
 import { useHistory } from 'react-router-dom'
-import {
-  CharacterProps,
-  CharacterProvider,
-} from './providers/Character.context'
-
-const useCreateCharacter = () => {
-  return {
-    create: createCharacter,
-  }
-}
+import { useCharacter } from './hooks/useCharacter'
+import { useEffect } from 'react'
 
 const CreateCharacter = () => {
   const history = useHistory()
-  const { create } = useCreateCharacter()
+  const { character, isFetching, create } = useCharacter()
 
-  const onReady = ({ character }: CharacterProps) => {
-    // If we already have a character, redirect
-    if (character) {
-      history.replace('/')
-    }
-  }
+  useEffect(() => {
+    // Just go to the root if you already have a character
+    if (!isFetching && character) history.replace('/')
+  }, [isFetching, character])
 
   const onSubmit = async (e: Event) => {
     e.preventDefault()
@@ -36,21 +25,19 @@ const CreateCharacter = () => {
     return false
   }
 
+  if (isFetching) return <div>Loading...</div>
+
   return (
-    <CharacterProvider onReady={onReady}>
-      {() => (
-        <>
-          <h1>Create Your Character</h1>
-          <form onSubmit={onSubmit as any}>
-            <label>
-              Character Name:
-              <input type="text" name="characterName" />
-            </label>
-            <button type="submit">Create Character</button>
-          </form>
-        </>
-      )}
-    </CharacterProvider>
+    <>
+      <h1>Create Your Character</h1>
+      <form onSubmit={onSubmit as any}>
+        <label>
+          Character Name:
+          <input type="text" name="characterName" />
+        </label>
+        <button type="submit">Create Character</button>
+      </form>
+    </>
   )
 }
 
