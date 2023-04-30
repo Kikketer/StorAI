@@ -5,37 +5,58 @@ app StorAI {
   title: "StorAI",
   dependencies: [
     ("prettier", "2.8.8")
-  ]
+  ],
+  auth: {
+    // Expects entity User to have (username:String) and (password:String) fields.
+    userEntity: User,
+    methods: {
+      // We also support Google and GitHub, with more on the way!
+      usernameAndPassword: {}
+    },
+    // We'll see how this is used a bit later
+    onAuthFailedRedirectTo: "/login"
+  }
 }
 
 route RootRoute { path: "/", to: MainPage }
 page MainPage {
+  authRequired: true,
   component: import Main from "@client/MainPage.tsx"
 }
 
+route SignupRoute { path: "/signup", to: SignupPage }
+page SignupPage {
+  component: import Signup from "@client/SignupPage"
+}
+
+route LoginRoute { path: "/login", to: LoginPage }
+page LoginPage {
+  component: import Login from "@client/LoginPage"
+}
+
 query getCharacter {
-    fn: import { getCharacter } from "@server/queries.js",
-    entities: [Character]
+  fn: import { getCharacter } from "@server/queries.js",
+  entities: [Character]
 }
 
 action damage {
-    fn: import { damage } from "@server/actions.js",
-    entities: [Character]
+  fn: import { damage } from "@server/actions.js",
+  entities: [Character]
 }
 
-entity Task {=psl
-    id          Int     @id @default(autoincrement())
-    description String
-    isDone      Boolean @default(false)
+entity User {=psl
+  id          Int     @id @default(autoincrement())
+  username    String  @unique
+  password    String
 psl=}
 
 entity Character {=psl
-    id              Int     @id @default(autoincrement())
-    name            String
-    health_head     Int
-    health_body     Int
-    health_leftArm  Int
-    health_rightArm Int
-    health_leftLeg  Int
-    health_rightLeg Int
+  id              Int     @id @default(autoincrement())
+  name            String
+  health_head     Int
+  health_body     Int
+  health_leftArm  Int
+  health_rightArm Int
+  health_leftLeg  Int
+  health_rightLeg Int
 psl=}
