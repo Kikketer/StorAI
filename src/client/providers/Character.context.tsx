@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useMemo, FC } from 'react'
+import React, { createContext, useContext, useMemo, useEffect, FC } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Character } from '@wasp/entities'
 import getCharacter from '@wasp/queries/getCharacter'
 import { useQuery } from '@wasp/queries'
@@ -10,6 +11,7 @@ export type CharacterProps = {
 }
 
 type CharacterBase = {
+  onReady?: (T: CharacterProps) => void
   children: (T: CharacterProps) => JSX.Element
 }
 
@@ -20,7 +22,8 @@ type CharacterContextProps = {
 
 const CharacterContext = createContext<CharacterContextProps | null>(null)
 
-const CharacterProvider: FC<CharacterBase> = ({ children }): JSX.Element => {
+const CharacterProvider: FC<CharacterBase> = ({ onReady, children }) => {
+  const history = useHistory()
   const {
     data: character,
     error,
@@ -43,6 +46,12 @@ const CharacterProvider: FC<CharacterBase> = ({ children }): JSX.Element => {
     }
   }
 
+  useEffect(() => {
+    if (!isFetching) {
+      onReady?.({ character, getHit })
+    }
+  }, [isFetching])
+
   const availableAttributes = useMemo(() => {
     return {
       character,
@@ -54,6 +63,11 @@ const CharacterProvider: FC<CharacterBase> = ({ children }): JSX.Element => {
 
   if (isFetching) return <div>Loading...</div>
   if (error) return <div>Oh no... {error.message}</div>
+
+  if (!character) {
+    history.replace('/create')
+    return null
+  }
 
   return (
     <CharacterContext.Provider value={availableAttributes}>
