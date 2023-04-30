@@ -4,14 +4,19 @@ import getCharacter from '@wasp/queries/getCharacter'
 import { useQuery } from '@wasp/queries'
 import damage from '@wasp/actions/damage'
 
-type CharacterBase = {}
-
-type CharacterContextProps = {
-  character: Character
-  isFetching: boolean
-  error: any
+export type CharacterProps = {
+  character?: Character
   getHit: (T: { component: 'head'; amount: number }) => Promise<void>
 }
+
+type CharacterBase = {
+  children: (T: CharacterProps) => JSX.Element
+}
+
+type CharacterContextProps = {
+  isFetching: boolean
+  error: any
+} & CharacterProps
 
 const CharacterContext = createContext<CharacterContextProps | null>(null)
 
@@ -52,7 +57,7 @@ const CharacterProvider: FC<CharacterBase> = ({ children }): JSX.Element => {
 
   return (
     <CharacterContext.Provider value={availableAttributes}>
-      {children}
+      {children({ character, getHit })}
     </CharacterContext.Provider>
   )
 }

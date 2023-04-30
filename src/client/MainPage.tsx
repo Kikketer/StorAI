@@ -10,15 +10,19 @@ import { CharacterProvider } from './providers/Character.context'
 const MainPage = () => {
   return (
     <CharacterProvider>
-      <ChatProvider>
-        <div className={styles['main-container']}>
-          <RoomImage />
-          <Health />
-          <Inventory />
-          <Output />
-          <Input />
-        </div>
-      </ChatProvider>
+      {({ character, getHit }) => (
+        <ChatProvider>
+          {({ sendCommand }) => (
+            <div className={styles['main-container']}>
+              <RoomImage />
+              <Health getHit={getHit} character={character} />
+              <Inventory />
+              <Output />
+              <Input sendCommand={sendCommand} />
+            </div>
+          )}
+        </ChatProvider>
+      )}
     </CharacterProvider>
   )
 }

@@ -1,17 +1,14 @@
-import { ReactElement } from 'react'
-import { Character } from '../types'
+import { FC } from 'react'
 import styles from './health.module.css'
-import { useCharacter } from '../providers/Character.context'
+import { CharacterProps } from '../providers/Character.context'
 
-export const Health = () => {
-  const { character, getHit } = useCharacter()
-
+export const Health: FC<Pick<CharacterProps, 'getHit' | 'character'>> = ({
+  getHit,
+  character,
+}) => {
   return (
     <div className={styles.output}>
-      <pre>
-        {/*{JSON.stringify(health ?? {}, null, 2)}*/}
-        {JSON.stringify(character ?? {}, null, 2)}
-      </pre>
+      <pre>{JSON.stringify(character ?? {}, null, 2)}</pre>
       <button onClick={() => getHit({ component: 'head', amount: 1 })}>
         Damage
       </button>

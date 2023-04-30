@@ -1,9 +1,8 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, useState, FC } from 'react'
 import styles from './input.module.css'
-import { useChat } from '../providers/Chat.context'
+import { ChatProps } from '../providers/Chat.context'
 
-export const Input = (): ReactElement => {
-  const { chat } = useChat()
+export const Input: FC<ChatProps> = ({ sendCommand }): ReactElement => {
   const [loading, setLoading] = useState(false)
 
   // TS-BS... basic stuff like "submit a form" is very hard to find the proper event type
@@ -15,11 +14,12 @@ export const Input = (): ReactElement => {
 
     // TS-BS why do I always have to cast like this...
     const target = e.target as HTMLFormElement
+    const command = target.input.value
 
     try {
+      // Clear the input and send the value!
       target.input.value = ''
-
-      await chat((e.target as HTMLFormElement).input.value)
+      await sendCommand({ command })
       setLoading(false)
     } catch (err) {
       console.error(err)
