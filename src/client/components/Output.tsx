@@ -1,13 +1,14 @@
 import { ReactElement } from 'react'
+import styles from './output.module.css'
 
 type OutputProps = {
-  statement?: string
+  description?: string
 }
 
-export const Output = ({ statement }: OutputProps): ReactElement => {
+export const Output = ({ description }: OutputProps): ReactElement => {
   return (
-    <div>
-      <p>{statement ?? 'You are lost...'}</p>
+    <div className={styles.output}>
+      <p>{description ?? 'You are lost...'}</p>
     </div>
   )
 }

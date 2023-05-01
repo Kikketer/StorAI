@@ -6,23 +6,22 @@ export const Health: FC<Pick<CharacterProps, 'damageBody' | 'character'>> = ({
   damageBody,
   character,
 }) => {
-  const healthItems = Object.keys(character ?? {}).reduce(
-    (acc: any, attribute) => {
-      const name = attribute.match(/^health_(.*)/)
-      if (attribute.match(/^health/)) {
-        acc.push({ name: name?.[1], value: character?.[attribute] })
-      }
+  const healthItems: { name: string; value: number }[] = Object.keys(
+    character ?? {}
+  ).reduce((acc: any, attribute) => {
+    const name = attribute.match(/^health_(.*)/)
+    if (attribute.match(/^health/)) {
+      acc.push({ name: name?.[1], value: character?.[attribute] })
+    }
 
-      return acc
-    },
-    []
-  )
+    return acc
+  }, [])
 
   return (
     <div className={styles.output}>
       <ul>
         {healthItems.map((healthItem) => (
-          <li>
+          <li key={healthItem.name}>
             {healthItem.name}: {healthItem.value}
           </li>
         ))}
