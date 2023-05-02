@@ -5,7 +5,15 @@ export const getCharacter = async (_args: any, context: any) => {
     throw new HttpError(401)
   }
 
-  return context.entities.Character.findFirst({
+  const character = context.entities.Character.findFirst({
     where: { user: { id: context.user.id } },
   })
+
+  const currentRoom = context.entities.History.findMany({
+    where: { character: { id: character.id } },
+    orderBy: { id: 'desc' },
+    take: 1,
+  })?.[0]
+
+  return { character, currentRoom }
 }

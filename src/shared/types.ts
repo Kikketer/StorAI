@@ -20,3 +20,8 @@ export type RawChatOutput = {
     index: number
   }>
 }
+
+export type RawChatResponse = {
+  roomDescription: string
+  options: string[]
+}

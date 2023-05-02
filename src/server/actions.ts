@@ -53,17 +53,31 @@ export const sendCommand = async (
     })
     if (!character) return { image: '', description: '' }
 
-    const room = await generateRoom({ description: command })
+    console.log('history', context.entities)
+
+    // Get the last 5 room descriptions history
+    const roomHistory = await context.entities.History.findMany({
+      where: { character: { id: character.id } },
+      orderBy: { created_at: 'desc' },
+      take: 5,
+    })
+
+    const room = await generateRoom({
+      history: roomHistory ?? [],
+      description: command?.trim() || 'Wake Up',
+    })
     const parsedRoomDescription = parseRoomDescription({ description: room })
     const image = await generateImage({
       description: parsedRoomDescription?.imageDescription,
     })
-    // Save the resulting image to the database
-    await context.entities.Character.updateMany({
-      where: { id: character.id, user: { id: context.user.id } },
+
+    // Save the resulting image and room to the database in a rolling history
+    await context.entities.History.create({
       data: {
+        command: command?.trim() || 'Wake Up',
         room_image: image,
         room_description: parsedRoomDescription?.description,
+        character: { connect: { id: character.id } },
       },
     })
 

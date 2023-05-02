@@ -1,4 +1,4 @@
-import { Character } from '@wasp/entities'
+import { Character, History } from '@wasp/entities'
 import getCharacter from '@wasp/queries/getCharacter'
 import createCharacter from '@wasp/actions/createCharacter'
 import { useQuery } from '@wasp/queries'
@@ -6,6 +6,7 @@ import damage from '@wasp/actions/damage'
 
 type UseCharacter = {
   character?: Character
+  currentRoom?: History
   error: any
   isFetching: boolean
   create: (character: Pick<Character, 'name'>) => Promise<void>
@@ -19,11 +20,10 @@ type UseCharacter = {
 }
 
 export const useCharacter = (): UseCharacter => {
-  const {
-    data: character,
-    error,
-    isFetching,
-  } = useQuery<{ id: number }, Character>(getCharacter)
+  const { data, error, isFetching } = useQuery<
+    { id: number },
+    { character: Character; currentRoom: History }
+  >(getCharacter)
 
   const create = async ({ name }: Pick<Character, 'name'>) => {
     try {
@@ -41,8 +41,8 @@ export const useCharacter = (): UseCharacter => {
     amount: number
   }) => {
     try {
-      if (character) {
-        await damage({ id: character.id, component, amount })
+      if (data) {
+        await damage({ id: data.character.id, component, amount })
       }
     } catch (err) {
       console.error(err)
@@ -51,8 +51,11 @@ export const useCharacter = (): UseCharacter => {
 
   // const healBody = () => {}
 
+  console.log('Got character', data)
+
   return {
-    character,
+    character: data?.character?.id ? data.character : undefined,
+    currentRoom: data?.currentRoom,
     error,
     isFetching,
     create,

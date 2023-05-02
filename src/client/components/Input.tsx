@@ -34,6 +34,7 @@ export const Input: FC<Pick<ChatProps, 'sendCommand'>> = ({
     <div className={styles.input}>
       <form onSubmit={onSay as any}>
         <input
+          className={styles.inputInput}
           name="input"
           aria-label="What would you like to do?"
           placeholder="What would you like to do?"

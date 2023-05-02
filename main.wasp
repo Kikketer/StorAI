@@ -43,7 +43,7 @@ page LoginPage {
 
 query getCharacter {
   fn: import { getCharacter } from "@server/queries.js",
-  entities: [Character]
+  entities: [Character, History]
 }
 
 action createCharacter {
@@ -58,13 +58,14 @@ action damage {
 
 action sendCommand {
   fn: import { sendCommand } from "@server/actions.js",
-  entities: [Character]
+  entities: [Character, History]
 }
 
 entity User {=psl
   id          Int     @id @default(autoincrement())
   username    String  @unique
   password    String
+  created_at  DateTime @default(now())
   character   Character?
 psl=}
 
@@ -79,6 +80,16 @@ entity Character {=psl
   health_rightArm  Int
   health_leftLeg   Int
   health_rightLeg  Int
-  room_image       String?
-  room_description String?
+  created_at       DateTime @default(now())
+  room_history     History[]
+psl=}
+
+entity History {=psl
+  id               Int       @id @default(autoincrement())
+  character        Character @relation(fields: [characterId], references: [id])
+  characterId      Int
+  created_at       DateTime  @default(now())
+  command          String
+  room_image       String
+  room_description String
 psl=}

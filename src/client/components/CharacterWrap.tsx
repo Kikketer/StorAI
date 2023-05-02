@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Character } from '@wasp/entities'
+import { Character, History } from '@wasp/entities'
 import { useCharacter } from '../hooks/useCharacter'
 
 export type CharacterProps = {
   character?: Character
+  currentRoom?: History
   damageBody: (T: { component: 'head'; amount: number }) => Promise<void>
 }
 
@@ -14,9 +15,10 @@ type CharacterWrap = {
 
 export const CharacterWrap: FC<CharacterWrap> = ({ children }) => {
   const history = useHistory()
-  const { character, error, isFetching, damageBody } = useCharacter()
+  const { character, currentRoom, error, isFetching, damageBody } =
+    useCharacter()
 
-  if (isFetching) return <div>Loading...</div>
+  if (isFetching && !character) return <div>Loading...</div>
   if (error) return <div>Oh no... {error.message}</div>
 
   if (!character) {
@@ -24,7 +26,7 @@ export const CharacterWrap: FC<CharacterWrap> = ({ children }) => {
     return null
   }
 
-  return <div>{children({ character, damageBody })}</div>
+  return <div>{children({ character, currentRoom, damageBody })}</div>
 }
 
 CharacterWrap.displayName = 'CharacterProvider'
