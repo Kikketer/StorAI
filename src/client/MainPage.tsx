@@ -10,7 +10,7 @@ const MainPage = () => {
     <CharacterWrap>
       {({ character, currentRoom }) => (
         <ChatWrap>
-          {({ description, sendCommand, image }) => (
+          {({ description, options, sendCommand, image }) => (
             <div className={styles['main-container']}>
               <RoomImage image64={currentRoom?.room_image ?? image} />
               {/*<Health damageBody={damageBody} character={character} />*/}
@@ -19,7 +19,7 @@ const MainPage = () => {
                 characterName={character?.name}
                 description={currentRoom?.room_description ?? description}
               />
-              <Input sendCommand={sendCommand} />
+              <Input options={options} sendCommand={sendCommand} />
             </div>
           )}
         </ChatWrap>

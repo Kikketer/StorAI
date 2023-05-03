@@ -1,12 +1,17 @@
+import fetch from 'node-fetch'
 import { History } from '@wasp/entities'
 import { RawChatOutput, RawChatResponse } from '../shared/types'
-import fetch from 'node-fetch'
 
 export const parseRoomDescription = ({
   description,
 }: {
   description: string
-}): { description: string; options: string[]; imageDescription: string } => {
+}): {
+  description?: string
+  options?: string[]
+  imageDescription?: string
+  error?: any
+} => {
   // The room description actually comes back as a JSON object, so let's attempt to parse it!
   try {
     const result: RawChatResponse = JSON.parse(description)
@@ -20,9 +25,7 @@ export const parseRoomDescription = ({
     console.log(err)
 
     return {
-      description: `Ooops: ${err}`,
-      options: [],
-      imageDescription: 'A broken image',
+      error: err,
     }
   }
 }
@@ -97,8 +100,10 @@ export const generateRoom = async ({
 export const generateImage = async ({
   description,
 }: {
-  description: string
+  description?: string
 }): Promise<string> => {
+  if (!description) return ''
+
   const resp = await fetch(
     'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image',
     {

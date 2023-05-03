@@ -54,7 +54,7 @@ export const useCharacter = (): UseCharacter => {
   console.log('Got character', data)
 
   return {
-    character: data?.character?.id ? data.character : undefined,
+    character: data?.character,
     currentRoom: data?.currentRoom,
     error,
     isFetching,
