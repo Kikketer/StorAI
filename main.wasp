@@ -90,6 +90,9 @@ entity History {=psl
   characterId      Int
   created_at       DateTime  @default(now())
   command          String
-  room_image       String
-  room_description String
+  room_image       String?
+  room_description String?
+  room_options     String?
+  raw_response     String?
+  error            Boolean   @default(false)
 psl=}

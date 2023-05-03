@@ -1,19 +1,31 @@
 import HttpError from '@wasp/core/HttpError.js'
+import { Character, History } from '@wasp/entities'
 
-export const getCharacter = async (_args: any, context: any) => {
+export const getCharacter = async (
+  _args: any,
+  context: any
+): Promise<{ character?: Character; currentRoom?: History }> => {
   if (!context.user) {
     throw new HttpError(401)
   }
 
-  const character = context.entities.Character.findFirst({
+  const character = await context.entities.Character.findFirst({
     where: { user: { id: context.user.id } },
   })
 
-  const currentRoom = context.entities.History.findMany({
-    where: { character: { id: character.id } },
-    orderBy: { id: 'desc' },
-    take: 1,
-  })?.[0]
+  console.log('character', character)
 
-  return { character, currentRoom }
+  let currentRoom
+
+  if (character) {
+    currentRoom = (
+      await context.entities.History.findMany({
+        where: { character: { id: character.id } },
+        orderBy: { id: 'desc' },
+        take: 1,
+      })
+    )?.[0]
+  }
+
+  return { character: character, currentRoom }
 }

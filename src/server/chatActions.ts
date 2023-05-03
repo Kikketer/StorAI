@@ -1,28 +1,46 @@
-import { History } from '@wasp/entities'
-import { RawChatOutput, RawChatResponse } from '../shared/types'
 import fetch from 'node-fetch'
+import { History } from '@wasp/entities'
+import { RawChatOutput } from '../shared/types'
 
 export const parseRoomDescription = ({
   description,
 }: {
   description: string
-}): { description: string; options: string[]; imageDescription: string } => {
+}): {
+  description?: string
+  options?: string[]
+  imageDescription?: string
+  error?: any
+} => {
   // The room description actually comes back as a JSON object, so let's attempt to parse it!
   try {
-    const result: RawChatResponse = JSON.parse(description)
+    // const result: RawChatResponse = JSON.parse(description)
+    let cleanedDescription = description?.replace(/%/g, '').replace(/\n/g, '')
+    let options =
+      cleanedDescription?.match(
+        /(do\w*?}?)\?(.*)\{?\w?Something else.?}?/
+      )?.[2] ?? ''
+    cleanedDescription =
+      cleanedDescription.replace(options, '').replace(/\{.*}/, ' ') ?? ''
+    const imageDescription = cleanedDescription
+
+    // split into array of options
+    let optionList = options.split(/\d[.:]?/)
+    // remove whitespace
+    optionList = optionList.map((option) => option.trim())
+    // remove any empty strings
+    optionList = optionList.filter((option) => option !== '')
 
     return {
-      description: result.roomDescription,
-      options: result.options,
-      imageDescription: result.roomDescription,
+      description: cleanedDescription,
+      options: optionList,
+      imageDescription,
     }
   } catch (err) {
     console.log(err)
 
     return {
-      description: `Ooops: ${err}`,
-      options: [],
-      imageDescription: 'A broken image',
+      error: err,
     }
   }
 }
@@ -55,7 +73,14 @@ export const generateRoom = async ({
       {
         role: 'system',
         content: `
-        I want you to act as a text based adventure game. I will type commands and you will reply with a description of what the player character sees. I want you to only reply with the game output and nothing else. Do not write explanations. Do not type commands unless I instruct you to do so. Do not type any commands from the player. Every time the player would take an action, stop writing and wait for input. Do not make decisions for the player. Every time the player would make a decision, instead of continuing, stop and wait for player input. Please return all of your responses in JSON format. The room descriptions should be in an attribute called 'roomDescription'. Every time you stop and wait for player input, provide a list of options in the JSON attribute 'options'. For example { "roomDescription": "The room is dark", "options": ["Open the door", "Take the flashlight", "Turn on the lights"].
+        I want you to act as a text based adventure game. I will type commands and you will reply with a description of what the player character sees. I want you to only reply with the game output and nothing else. Do not write explanations. Do not type commands unless I instruct you to do so. Do not type any commands from the player unless I tell you otherwise. When I need to give you instructions that are not player commands, I will do so by putting text inside curly brackets {like this}. Treat any text I put inside brackets {like this} as instructions for you and not player input in the game. Every time the player would take an action, stop writing and wait for input. Do not make decisions for the player. Every time the player would make a decision, instead of continuing, stop and wait for player input. When you describe the scene please surround that text with a % sign. When you describe a room it would be surrounded by % signs like this: %The room is incredibly dark%. Every time you stop and wait for player input, provide a list of options as a list that always ends with { something else} like this:
+        
+        { What do you do? }
+        
+        Option 1
+        Option 2
+        Option 3
+        { Something else }
         
         Backstory:
         You are a new crew member on the USS Buttknuckle. The USS Buttknuckle is a cargo ship en route to a mining colony in an asteroid belt. The Unified Galactic Government (UGG) is engaged in a war with space pirates, who call themselves “The Unheard”. The pirates are vicious and will stop at nothing to get what they want.
@@ -97,8 +122,10 @@ export const generateRoom = async ({
 export const generateImage = async ({
   description,
 }: {
-  description: string
+  description?: string
 }): Promise<string> => {
+  if (!description) return ''
+
   const resp = await fetch(
     'https://api.stability.ai/v1/generation/stable-diffusion-xl-beta-v2-2-2/text-to-image',
     {

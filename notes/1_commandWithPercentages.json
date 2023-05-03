@@ -8,6 +8,18 @@
     {
       "role": "user",
       "content": "Wake up"
+    },
+    {
+      "role": "assistant",
+      "content": "%You awaken to the sound of an alarm blaring. The room around you is small and cramped. You are in your bunk on the USS Buttknuckle. Cal's voice can be heard over the intercom, telling everyone to report to the bridge immediately. You can hear footsteps rushing past your door.% \n\n{What do you do?}\n\n1. Get dressed and head to the bridge\n2. Stay in bed and ignore the alarm\n3. Look around the room for anything useful\n{ Something else }"
+    },
+    {
+      "role": "user",
+      "content": "Get dressed"
+    },
+    {
+      "role": "assistant",
+      "content": "%You quickly get dressed and head to the bridge. As you make your way through the narrow hallways of the ship, you can't help but notice that something feels off. When you arrive at the bridge, you see Cal and Gus standing in front of the control panel looking worried. Susana's voice comes over the speakers, \"We have an incoming distress signal from a nearby ship. It's the Black Star. They're saying they're under attack by space pirates.\"%\n\n{What do you do?}\n\n1. Offer to help and suggest a plan of action\n2. Wait for orders from Cal and Gus\n3. Suggest abandoning the Black Star and continuing with the mission to the mining colony\n{ Something else } \n\nBackstory:\n\nAs new crew member, you have heard rumors and whispers about the dangers of working with Cal and Gus. The Black Star is a known smuggler and the crew of the USS Buttknuckle is well aware of this. However, helping the Black Star could earn the USS Buttknuckle a hefty profit."
     }
   ]
 }

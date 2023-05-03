@@ -45,13 +45,18 @@ export const createCharacter = ({ name }: { name: string }, context: any) => {
 export const sendCommand = async (
   { command }: { command: string },
   context: any
-): Promise<{ image: string; description: string } | void> => {
+): Promise<{
+  image?: string
+  description?: string
+  options?: string[]
+  error?: any
+} | void> => {
   if (context.user) {
     // Get the current character
     const character = await context.entities.Character.findFirst({
       where: { user: { id: context.user.id } },
     })
-    if (!character) return { image: '', description: '' }
+    if (!character) return { image: '', description: '', options: [] }
 
     console.log('history', context.entities)
 
@@ -67,6 +72,25 @@ export const sendCommand = async (
       description: command?.trim() || 'Wake Up',
     })
     const parsedRoomDescription = parseRoomDescription({ description: room })
+
+    if (parsedRoomDescription.error) {
+      await context.entities.History.create({
+        data: {
+          command: command?.trim() || 'Wake Up',
+          raw_response: room,
+          error: true,
+          character: { connect: { id: character.id } },
+        },
+      })
+
+      return {
+        image: '',
+        description: 'There was an error :(  You win?',
+        options: [],
+        error: parsedRoomDescription?.error,
+      }
+    }
+
     const image = await generateImage({
       description: parsedRoomDescription?.imageDescription,
     })
@@ -77,10 +101,18 @@ export const sendCommand = async (
         command: command?.trim() || 'Wake Up',
         room_image: image,
         room_description: parsedRoomDescription?.description,
+        room_options: JSON.stringify(parsedRoomDescription?.options ?? []),
+        raw_response: room,
         character: { connect: { id: character.id } },
       },
     })
 
-    return { image, description: room }
+    return {
+      image,
+      description: parsedRoomDescription?.description,
+      options: parsedRoomDescription?.options,
+    }
   }
+
+  return undefined
 }
