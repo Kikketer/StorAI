@@ -10,9 +10,16 @@ export const Output = ({
   description,
   characterName,
 }: OutputProps): ReactElement => {
+  // Split the description on newlines and map each line to a paragraph
+  const lines = description?.split(/\n/) ?? []
+
   return (
     <div className={styles.output}>
-      <p>{description || `Welcome ${characterName}`}</p>
+      <p>
+        {lines?.length
+          ? lines.map((line) => <p>{line}</p>)
+          : `Welcome ${characterName}`}
+      </p>
     </div>
   )
 }

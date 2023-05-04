@@ -25,3 +25,10 @@ export type RawChatResponse = {
   roomDescription: string
   options: string[]
 }
+
+export type Theme = {
+  backstory: string
+  characters: string
+  plot: string
+  imageTheme: string
+}

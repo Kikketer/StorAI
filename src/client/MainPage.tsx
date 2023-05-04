@@ -13,8 +13,6 @@ const MainPage = () => {
           {({ description, options, sendCommand, image }) => (
             <div className={styles['main-container']}>
               <RoomImage image64={currentRoom?.room_image ?? image} />
-              {/*<Health damageBody={damageBody} character={character} />*/}
-              {/*<Inventory />*/}
               <Output
                 characterName={character?.name}
                 description={currentRoom?.room_description ?? description}

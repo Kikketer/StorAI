@@ -4,6 +4,7 @@ import {
   generateRoom,
   parseRoomDescription,
 } from './chatActions.js'
+import spaceTheme from './starter_space.js'
 
 env.config()
 
@@ -47,8 +48,7 @@ export const sendCommand = async (
   context: any
 ): Promise<{
   image?: string
-  description?: string
-  options?: string[]
+  description: string
   error?: any
 } | void> => {
   if (context.user) {
@@ -56,7 +56,7 @@ export const sendCommand = async (
     const character = await context.entities.Character.findFirst({
       where: { user: { id: context.user.id } },
     })
-    if (!character) return { image: '', description: '', options: [] }
+    if (!character) return { image: '', description: '' }
 
     console.log('history', context.entities)
 
@@ -68,30 +68,14 @@ export const sendCommand = async (
     })
 
     const room = await generateRoom({
+      theme: spaceTheme,
       history: roomHistory ?? [],
       description: command?.trim() || 'Wake Up',
     })
     const parsedRoomDescription = parseRoomDescription({ description: room })
 
-    if (parsedRoomDescription.error) {
-      await context.entities.History.create({
-        data: {
-          command: command?.trim() || 'Wake Up',
-          raw_response: room,
-          error: true,
-          character: { connect: { id: character.id } },
-        },
-      })
-
-      return {
-        image: '',
-        description: 'There was an error :(  You win?',
-        options: [],
-        error: parsedRoomDescription?.error,
-      }
-    }
-
     const image = await generateImage({
+      theme: spaceTheme,
       description: parsedRoomDescription?.imageDescription,
     })
 
@@ -101,7 +85,6 @@ export const sendCommand = async (
         command: command?.trim() || 'Wake Up',
         room_image: image,
         room_description: parsedRoomDescription?.description,
-        room_options: JSON.stringify(parsedRoomDescription?.options ?? []),
         raw_response: room,
         character: { connect: { id: character.id } },
       },
@@ -109,8 +92,7 @@ export const sendCommand = async (
 
     return {
       image,
-      description: parsedRoomDescription?.description,
-      options: parsedRoomDescription?.options,
+      description: room,
     }
   }
 
