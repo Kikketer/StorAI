@@ -15,11 +15,11 @@ export const Output = ({
 
   return (
     <div className={styles.output}>
-      <p>
+      <div>
         {lines?.length
-          ? lines.map((line) => <p>{line}</p>)
+          ? lines.map((line, index) => <p key={index}>{line}</p>)
           : `Welcome ${characterName}`}
-      </p>
+      </div>
     </div>
   )
 }

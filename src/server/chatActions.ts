@@ -5,8 +5,11 @@ import {
   ChatPromptTemplate,
   SystemMessagePromptTemplate,
   HumanMessagePromptTemplate,
+  MessagesPlaceholder,
 } from 'langchain/prompts'
+import { HumanChatMessage, AIChatMessage } from 'langchain/schema'
 import { LLMChain } from 'langchain/chains'
+import { BufferMemory, ChatMessageHistory } from 'langchain/memory'
 import { Theme } from '../shared/types'
 
 export const parseRoomDescription = ({
@@ -38,6 +41,7 @@ export const parseRoomDescription = ({
 
 export const generateRoom = async ({
   theme,
+  history,
   description,
 }: {
   theme: Theme
@@ -65,17 +69,37 @@ export const generateRoom = async ({
 
   const model = new ChatOpenAI({ temperature: 0.7 })
 
+  // Create a chat message history array based on the history array passed in
+  const chatHistoryArray = history.reduce((acc, h) => {
+    acc.push(new HumanChatMessage(h.command))
+    if (h.raw_response) {
+      acc.push(new AIChatMessage(h.raw_response))
+    }
+
+    return acc
+  }, [] as Array<HumanChatMessage | AIChatMessage>)
+
   const chatPrompt = ChatPromptTemplate.fromPromptMessages([
     SystemMessagePromptTemplate.fromTemplate(system),
-    HumanMessagePromptTemplate.fromTemplate(description),
+    new MessagesPlaceholder('history'),
+    HumanMessagePromptTemplate.fromTemplate('{input}'),
   ])
+
+  const bufferHistory = new BufferMemory({
+    returnMessages: true,
+    memoryKey: 'history',
+    chatHistory: new ChatMessageHistory(chatHistoryArray),
+  })
 
   const chain = new LLMChain({
     prompt: chatPrompt,
+    memory: bufferHistory,
     llm: model,
   })
 
-  const result = await chain.call({})
+  const result = await chain.call({
+    input: description,
+  })
 
   return result.text
 }
