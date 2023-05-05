@@ -60,6 +60,26 @@ export const sendCommand = async (
 
     console.log('history', context.entities)
 
+    const startOfTheDay = new Date()
+    startOfTheDay.setHours(0, 0, 0, 0)
+
+    // Find total number of commands sent
+    const totalCommands = await context.entities.History.findMany({
+      select: { created_at: true },
+      where: {
+        created_at: {
+          gte: startOfTheDay,
+        },
+      },
+    })
+
+    if (totalCommands?.length >= Number(process.env.REQUEST_LIMIT)) {
+      return {
+        image: '',
+        description: `We have reached the overall daily request limit of ${process.env.REQUEST_LIMIT} requests (I\'m cheap). Please try again tomorrow.`,
+      }
+    }
+
     // Get the last 5 room descriptions history
     const roomHistory = await context.entities.History.findMany({
       where: { character: { id: character.id } },

@@ -3,7 +3,7 @@ import styles from './output.module.css'
 
 type OutputProps = {
   characterName?: string
-  description?: string
+  description?: string | null
 }
 
 export const Output = ({

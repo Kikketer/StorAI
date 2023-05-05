@@ -15,7 +15,7 @@ const MainPage = () => {
               <RoomImage image64={currentRoom?.room_image ?? image} />
               <Output
                 characterName={character?.name}
-                description={currentRoom?.room_description ?? description}
+                description={description || currentRoom?.room_description}
               />
               <Input options={options} sendCommand={sendCommand} />
             </div>

@@ -21,9 +21,7 @@ export const parseRoomDescription = ({
   imageDescription?: string
   error?: any
 } => {
-  // The room description actually comes back as a JSON object, so let's attempt to parse it!
   try {
-    // const result: RawChatResponse = JSON.parse(description)
     const [room] = description?.split(/\n/) ?? []
 
     return {
