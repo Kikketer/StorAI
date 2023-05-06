@@ -1,15 +1,16 @@
-.input {
+.root {
   padding: 1rem;
   grid-area: input;
 }
 
-.inputInput {
+.input {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
   font-size: 1rem;
   line-height: 1.5;
+  background-color: var(--dark);
 }
 
 .hidden {

@@ -1,3 +1,4 @@
+import './neat.css'
 import { Link } from 'react-router-dom'
 import { LoginForm } from '@wasp/auth/forms/Login'
 

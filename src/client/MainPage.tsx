@@ -1,3 +1,4 @@
+import './neat.css'
 import { RoomImage } from './components/RoomImage'
 import styles from './mainPage.module.css'
 import { Output } from './components/Output'

@@ -1,0 +1,12 @@
+.root {
+  position: absolute;
+  bottom: 5px;
+  z-index: 150;
+}
+
+.root button {
+  font-size: 0.7rem;
+  color: var(--text);
+  border: 1px solid var(--text);
+  padding: 0.2rem;
+}

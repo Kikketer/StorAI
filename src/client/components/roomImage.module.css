@@ -1,6 +1,50 @@
-.room-image {
-  min-height: 33%;
+.root {
   grid-area: image;
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.image {
+  position: absolute;
+  height: 248px;
+  width: 248px;
+  top: 47px;
+  left: calc(50% - 124px);
+  background-position: center top;
+  background-size: contain;
+  z-index: 1;
+}
+
+.computer {
+  width: 320px;
+  height: 320px;
+  background-image: url('../img/ComputerBG.png');
+  background-position: center top;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 100;
+}
+
+@media screen and (min-width: 768px) {
+  .image {
+    height: 250px;
+    width: 250px;
+    top: 50px;
+    left: calc(50% - 124px);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .computer {
+    height: 500px;
+    width: 500px;
+  }
+
+  .image {
+    height: 380px;
+    width: 380px;
+    top: 45px;
+    left: calc(50% - 181px);
+  }
 }

@@ -12,14 +12,25 @@ export const Output = ({
 }: OutputProps): ReactElement => {
   // Split the description on newlines and map each line to a paragraph
   const lines = description?.split(/\n/) ?? []
+  let justDescription = ''
+  const options =
+    lines?.filter((line) => {
+      if (line.trim().match(/^\d/)) {
+        return true
+      }
+      justDescription += line
+    }) ?? []
+
+  console.log('otpions: ', options)
 
   return (
     <div className={styles.output}>
-      <div>
-        {lines?.length
-          ? lines.map((line, index) => <p key={index}>{line}</p>)
-          : `Welcome ${characterName}`}
-      </div>
+      <p>{justDescription ?? `Welcome ${characterName}`}</p>
+      <ul>
+        {options.map((line, index) => (
+          <li key={index}>{line}</li>
+        ))}
+      </ul>
     </div>
   )
 }
