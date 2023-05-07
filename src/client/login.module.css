@@ -1,0 +1,9 @@
+.root {
+  margin: auto;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.root input {
+  background-color: var(--dark);
+}

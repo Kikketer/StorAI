@@ -2,25 +2,21 @@ import { ReactElement } from 'react'
 import styles from './roomImage.module.css'
 import computer from '../img/ComputerBG.png'
 import { Actions } from './Actions'
+import { Screen } from './Screen'
 
 type RoomImageProps = {
   image64?: string
+  loading?: boolean
 }
 
-export const RoomImage = ({ image64 }: RoomImageProps): ReactElement => {
-  console.log('image? ', image64?.length)
+export const RoomImage = ({
+  image64,
+  loading,
+}: RoomImageProps): ReactElement => {
   return (
     <div className={styles.root} style={{ backgroundImage: computer }}>
       <div className={styles.computer}></div>
-      {image64 ? (
-        <img
-          className={styles.image}
-          alt="room"
-          src={`data:image/png;base64,${image64}`}
-        />
-      ) : (
-        'You are lost'
-      )}
+      <Screen image64={image64} loading={loading} />
       <Actions />
     </div>
   )

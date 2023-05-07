@@ -53,6 +53,11 @@ action createCharacter {
   entities: [Character]
 }
 
+action abandonCharacter {
+  fn: import { abandonCharacter } from "@server/actions.js",
+  entities: [Character]
+}
+
 action damage {
   fn: import { damage } from "@server/actions.js",
   entities: [Character]
@@ -68,14 +73,15 @@ entity User {=psl
   username    String  @unique
   password    String
   created_at  DateTime @default(now())
-  character   Character?
+  characters  Character[]?
 psl=}
 
 entity Character {=psl
   id               Int     @id @default(autoincrement())
   user             User    @relation(fields: [userId], references: [id])
-  userId           Int     @unique
+  userId           Int
   name             String
+  active           Boolean @default(true)
   health_head      Int
   health_body      Int
   health_leftArm   Int

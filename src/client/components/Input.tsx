@@ -2,22 +2,16 @@ import { ReactElement, useState, FC } from 'react'
 import styles from './input.module.css'
 import { ChatProps } from './ChatWrap'
 
-export const Input: FC<Pick<ChatProps, 'sendCommand' | 'options'>> = ({
+export const Input: FC<Pick<ChatProps, 'sendCommand' | 'loading'>> = ({
   sendCommand,
-  options,
-}): ReactElement => {
-  const [loading, setLoading] = useState(false)
-
+  loading,
+}) => {
   const send = async (command: string) => {
     try {
-      setLoading(true)
       await sendCommand({ command })
-      setLoading(false)
     } catch (err) {
       console.error(err)
     }
-
-    setLoading(false)
   }
 
   // TS-BS... basic stuff like "submit a form" is very hard to find the proper event type
@@ -41,13 +35,6 @@ export const Input: FC<Pick<ChatProps, 'sendCommand' | 'options'>> = ({
   return (
     <div className={styles.root}>
       <form onSubmit={onSay as any}>
-        <div>
-          {options?.map((option) => (
-            <button type="button" onClick={() => useOption(option)}>
-              {option}
-            </button>
-          ))}
-        </div>
         <input
           className={styles.input}
           name="input"

@@ -10,10 +10,8 @@ export const getCharacter = async (
   }
 
   const character = await context.entities.Character.findFirst({
-    where: { user: { id: context.user.id } },
+    where: { user: { id: context.user.id }, active: true },
   })
-
-  console.log('character', character)
 
   let currentRoom
 
@@ -27,5 +25,5 @@ export const getCharacter = async (
     )?.[0]
   }
 
-  return { character: character, currentRoom }
+  return { character, currentRoom }
 }

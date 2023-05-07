@@ -43,6 +43,16 @@ export const createCharacter = ({ name }: { name: string }, context: any) => {
   }
 }
 
+export const abandonCharacter = (_args: never, context: any) => {
+  if (context.user) {
+    // Update the character table to disconnect the relation between that character and the user
+    return context.entities.Character.updateMany({
+      where: { user: { id: context.user.id } },
+      data: { active: false },
+    })
+  }
+}
+
 export const sendCommand = async (
   { command }: { command: string },
   context: any
@@ -54,7 +64,7 @@ export const sendCommand = async (
   if (context.user) {
     // Get the current character
     const character = await context.entities.Character.findFirst({
-      where: { user: { id: context.user.id } },
+      where: { user: { id: context.user.id }, active: true },
     })
     if (!character) return { image: '', description: '' }
 

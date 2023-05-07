@@ -1,12 +1,14 @@
+import logoutWasp from '@wasp/auth/logout.js'
 import styles from './actions.module.css'
+import abandonCharacter from '@wasp/actions/abandonCharacter'
 
 const useActions = () => {
-  const logout = () => {}
-
-  const reset = () => {}
+  const reset = () => {
+    abandonCharacter()
+  }
 
   return {
-    logout,
+    logout: logoutWasp,
     reset,
   }
 }

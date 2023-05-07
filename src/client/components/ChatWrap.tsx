@@ -3,9 +3,9 @@ import sendCommandToServer from '@wasp/actions/sendCommand'
 
 export type ChatProps = {
   description?: string
-  options?: string[]
   sendCommand: (T: { command: string }) => Promise<void>
   image: string
+  loading: boolean
 }
 
 type ChatWrap = {
@@ -15,18 +15,20 @@ type ChatWrap = {
 export const ChatWrap: FC<ChatWrap> = ({ children }) => {
   const [image, setImage] = useState('')
   const [description, setDescription] = useState('')
-  const [options, setOptions] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
 
   const sendCommand = async ({ command }: { command: string }) => {
     try {
+      setLoading(true)
       const results = await sendCommandToServer({ command })
       setImage(results?.image ?? '')
       setDescription(results?.description ?? '')
-      setOptions(results?.options ?? [])
     } catch (err) {
       console.error(err)
     }
+
+    setLoading(false)
   }
 
-  return <div>{children({ description, options, sendCommand, image })}</div>
+  return <div>{children({ description, sendCommand, image, loading })}</div>
 }

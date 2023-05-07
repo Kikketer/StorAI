@@ -6,7 +6,6 @@ import { useCharacter } from '../hooks/useCharacter'
 export type CharacterProps = {
   character?: Character
   currentRoom?: History
-  damageBody: (T: { component: 'head'; amount: number }) => Promise<void>
 }
 
 type CharacterWrap = {
@@ -15,18 +14,17 @@ type CharacterWrap = {
 
 export const CharacterWrap: FC<CharacterWrap> = ({ children }) => {
   const history = useHistory()
-  const { character, currentRoom, error, isFetching, damageBody } =
-    useCharacter()
+  const { character, currentRoom, error, isLoading } = useCharacter()
 
-  if (isFetching && !character) return <div>Loading...</div>
+  if (isLoading && !character) return <div>Loading Game...</div>
   if (error) return <div>Oh no... {error.message}</div>
 
-  if (!character) {
+  if (!isLoading && !character) {
     history.replace('/create')
     return null
   }
 
-  return <div>{children({ character, currentRoom, damageBody })}</div>
+  return <div>{children({ character, currentRoom })}</div>
 }
 
 CharacterWrap.displayName = 'CharacterProvider'

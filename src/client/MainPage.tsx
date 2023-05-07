@@ -11,14 +11,18 @@ const MainPage = () => {
     <CharacterWrap>
       {({ character, currentRoom }) => (
         <ChatWrap>
-          {({ description, options, sendCommand, image }) => (
+          {({ description, sendCommand, image, loading }) => (
             <div className={styles['main-container']}>
-              <RoomImage image64={currentRoom?.room_image ?? image} />
+              <RoomImage
+                image64={currentRoom?.room_image ?? image}
+                loading={loading}
+              />
               <Output
                 characterName={character?.name}
                 description={description || currentRoom?.room_description}
+                loading={loading}
               />
-              <Input options={options} sendCommand={sendCommand} />
+              <Input sendCommand={sendCommand} loading={loading} />
             </div>
           )}
         </ChatWrap>
