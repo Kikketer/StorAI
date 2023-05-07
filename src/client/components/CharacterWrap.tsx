@@ -19,6 +19,7 @@ export const CharacterWrap: FC<CharacterWrap> = ({ children }) => {
   if (isLoading && !character) return <div>Loading Game...</div>
   if (error) return <div>Oh no... {error.message}</div>
 
+  // TODO Probably should check for the 401 error instead
   if (!isLoading && !character) {
     history.replace('/create')
     return null

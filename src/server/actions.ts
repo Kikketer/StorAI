@@ -1,4 +1,5 @@
 import * as env from 'dotenv'
+import HttpError from '@wasp/core/HttpError.js'
 import {
   generateImage,
   generateRoom,
@@ -60,71 +61,70 @@ export const sendCommand = async (
   image?: string
   description: string
   error?: any
-} | void> => {
-  if (context.user) {
-    // Get the current character
-    const character = await context.entities.Character.findFirst({
-      where: { user: { id: context.user.id }, active: true },
-    })
-    if (!character) return { image: '', description: '' }
+}> => {
+  if (!context.user) {
+    throw new HttpError(401)
+  }
+  // Get the current character
+  const character = await context.entities.Character.findFirst({
+    where: { user: { id: context.user.id }, active: true },
+  })
+  if (!character) return { image: '', description: '' }
 
-    console.log('history', context.entities)
+  console.log('history', context.entities)
 
-    const startOfTheDay = new Date()
-    startOfTheDay.setHours(0, 0, 0, 0)
+  const startOfTheDay = new Date()
+  startOfTheDay.setHours(0, 0, 0, 0)
 
-    // Find total number of commands sent
-    const totalCommands = await context.entities.History.findMany({
-      select: { created_at: true },
-      where: {
-        created_at: {
-          gte: startOfTheDay,
-        },
+  // Find total number of commands sent
+  const totalCommands = await context.entities.History.findMany({
+    select: { created_at: true },
+    where: {
+      created_at: {
+        gte: startOfTheDay,
       },
-    })
+    },
+  })
 
-    if (totalCommands?.length >= Number(process.env.REQUEST_LIMIT)) {
-      return {
-        image: '',
-        description: `We have reached the overall daily request limit of ${process.env.REQUEST_LIMIT} requests (I\'m cheap). Please try again tomorrow.`,
-      }
-    }
-
-    // Get the last 5 room descriptions history
-    const roomHistory = await context.entities.History.findMany({
-      where: { character: { id: character.id } },
-      orderBy: { created_at: 'desc' },
-      take: 5,
-    })
-
-    const room = await generateRoom({
-      theme: spaceTheme,
-      history: roomHistory ?? [],
-      description: command?.trim() || 'Wake Up',
-    })
-    const parsedRoomDescription = parseRoomDescription({ description: room })
-
-    const image = await generateImage({
-      theme: spaceTheme,
-      description: parsedRoomDescription?.imageDescription,
-    })
-
-    // Save the resulting image and room to the database in a rolling history
-    await context.entities.History.create({
-      data: {
-        command: command?.trim() || 'Wake Up',
-        room_image: image,
-        room_description: parsedRoomDescription?.description,
-        raw_response: room,
-        character: { connect: { id: character.id } },
-      },
-    })
-
+  if (totalCommands?.length >= Number(process.env.REQUEST_LIMIT)) {
     return {
-      image,
-      description: room,
+      image: '',
+      description: `We have reached the overall daily request limit of ${process.env.REQUEST_LIMIT} requests (I\'m cheap). Please try again tomorrow.`,
     }
   }
 
-  return undefined
+  // Get the last 5 room descriptions history
+  const roomHistory = await context.entities.History.findMany({
+    where: { character: { id: character.id } },
+    orderBy: { created_at: 'desc' },
+    take: 5,
+  })
+
+  const room = await generateRoom({
+    theme: spaceTheme,
+    history: roomHistory ?? [],
+    description: command?.trim() || 'Wake Up',
+  })
+  const parsedRoomDescription = parseRoomDescription({ description: room })
+
+  const image = await generateImage({
+    theme: spaceTheme,
+    description: parsedRoomDescription?.imageDescription,
+  })
+
+  // Save the resulting image and room to the database in a rolling history
+  await context.entities.History.create({
+    data: {
+      command: command?.trim() || 'Wake Up',
+      room_image: image,
+      room_description: parsedRoomDescription?.description,
+      raw_response: room,
+      character: { connect: { id: character.id } },
+    },
+  })
+
+  return {
+    image,
+    description: room,
+  }
 }
