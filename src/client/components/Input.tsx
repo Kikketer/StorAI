@@ -1,4 +1,4 @@
-import { ReactElement, useState, FC } from 'react'
+import { useRef, FC, useEffect } from 'react'
 import styles from './input.module.css'
 import { ChatProps } from './ChatWrap'
 
@@ -6,6 +6,7 @@ export const Input: FC<Pick<ChatProps, 'sendCommand' | 'loading'>> = ({
   sendCommand,
   loading,
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null)
   const send = async (command: string) => {
     try {
       await sendCommand({ command })
@@ -28,14 +29,17 @@ export const Input: FC<Pick<ChatProps, 'sendCommand' | 'loading'>> = ({
     return send(command)
   }
 
-  const useOption = async (option: string) => {
-    return send(option)
-  }
+  useEffect(() => {
+    if (!loading) {
+      inputRef.current?.focus()
+    }
+  }, [loading])
 
   return (
     <div className={styles.root}>
       <form onSubmit={onSay as any}>
         <input
+          ref={inputRef}
           className={styles.input}
           name="input"
           aria-label="What would you like to do?"
