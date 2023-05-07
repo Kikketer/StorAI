@@ -2,6 +2,9 @@ app StorAI {
   wasp: {
     version: "^0.10.3"
   },
+  db: {
+    system: PostgreSQL,
+  },
   title: "StorAI",
   dependencies: [
     ("json5", "2.2.3"),

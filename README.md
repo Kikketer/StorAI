@@ -1,5 +1,7 @@
 # StorAI
 
+![A computer with a generated spaceship image and a small story below it](./StorAI.png)
+
 This is not my finest work but was entirely intended to be a POC and learning opportunity as part of the [Wasp Lang hackathon](https://hackathon.wasp-lang.dev/).
 
 ### Goals
@@ -23,3 +25,7 @@ This is not my finest work but was entirely intended to be a POC and learning op
 2. Make more themes, right now it's a "stolen" sci-fi theme from a [blog post](https://gentlebullco.medium.com/turn-chatgpt-into-an-open-ended-choose-your-own-adventure-game-and-role-play-any-story-you-want-ad4572cb9077)
 
 Overall I'm quite happy with the outcome and the things I've learned. I'm excited to use Wasp for any full-stack application I may need in the future. I hate spending hours with the configurations and such and I don't want to put my applications out in the wild without authentication. Wasp worked great for these requirements as I was able to quickly start writing the frontend code.
+
+And lastly here's an AI generated image I created while building this application. I was in the middle of turkey hunting (hanging out at the camper with hot-spot wifi) while working on a good chunk of this application.  Remote work is awesome :)
+
+![The King Turkey](./KingTurkey.png)
